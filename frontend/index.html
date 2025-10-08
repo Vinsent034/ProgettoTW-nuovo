@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Street Cats</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <style>
+    :root{
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --surface:#f8fafc;
+      --line:#e5e7eb;
+      --accent:#3b82f6;
+    }
+    * { box-sizing: border-box; }
+    body { 
+      color: var(--ink); 
+      font-family: system-ui, Arial, sans-serif;
+      margin: 20px;
+      background: #f9fafb;
+    }
+
+    .topbar{
+      display:flex; align-items:center; justify-content:center;
+      background: var(--surface);
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:14px 16px; position:relative;
+    }
+    .topbar h1{
+      margin:0; font-weight:700; letter-spacing:.5px; color: var(--ink);
+    }
+    .topbar .login{
+      position:absolute; right:12px; top:50%; transform: translateY(-50%);
+      padding:8px 14px; border:1px solid var(--line); border-radius:8px;
+      background:#fff; color: var(--ink); text-decoration:none;
+    }
+    .topbar .login:hover{ border-color: var(--accent); color: var(--accent); }
+    
+    .topbar .user-info{
+      position:absolute; right:12px; top:50%; transform: translateY(-50%);
+      display: flex; gap: 10px; align-items: center;
+    }
+    .topbar .user-name{
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .topbar .logout{
+      padding:6px 12px; border:1px solid var(--line); border-radius:8px;
+      background:#fff; color: var(--ink); text-decoration:none;
+      cursor: pointer; font-size: 14px;
+    }
+    .topbar .logout:hover{ border-color: #ef4444; color: #ef4444; }
+
+    .map-box{
+      margin-top:14px; background:#fff;
+      border:1px solid var(--line); border-radius:12px; padding:10px;
+    }
+    #map{
+      height: 420px;
+      border-radius:10px; border:1px solid var(--line);
+    }
+
+    .actions{ display:flex; justify-content:center; margin:22px 0 8px; }
+    .btn{
+      background: var(--accent); color:#fff; border:none;
+      padding:10px 22px; border-radius:10px; cursor:pointer;
+      box-shadow: 0 1px 0 rgba(0,0,0,.08);
+    }
+    .btn:hover{ filter: brightness(1.05); }
+    .btn:active{ transform: translateY(1px); }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <h1>Street Cats</h1>
+    
+    <!-- Mostro LOGIN o INFO UTENTE -->
+    <a class="login" href="login.html" id="linkLogin">Login</a>
+    
+    <div class="user-info" id="userInfo" style="display:none;">
+      <span class="user-name">Ciao, <strong id="userName"></strong>!</span>
+      <button class="logout" id="btnLogout">Logout</button>
+    </div>
+  </header>
+
+  <section class="map-box" aria-label="Mappa">
+    <div id="map" role="region" aria-label="Mappa centrata su Napoli"></div>
+  </section>
+
+  <div class="actions">
+    <button class="btn" id="btnPubblica">Pubblica</button>
+  </div>
+
+  <script>
+    // ========================================
+    // SCRIPT INLINE PER INDEX.HTML
+    // ========================================
+    
+    console.log('Pagina caricata!');
+    
+    // Variabile globale per la mappa
+    let map;
+    
+    // ========================================
+    // 1. CONTROLLO SE L'UTENTE È LOGGATO
+    // ========================================
+    
+    function controllaUtente() {
+      const token = localStorage.getItem('token');
+      const userData = localStorage.getItem('user');
+      
+      const linkLogin = document.getElementById('linkLogin');
+      const userInfo = document.getElementById('userInfo');
+      const userName = document.getElementById('userName');
+      
+      if (token && userData) {
+        // Utente loggato ✅
+        const user = JSON.parse(userData);
+        console.log('Utente loggato:', user.name);
+        
+        // Mostro info utente, nascondo login
+        linkLogin.style.display = 'none';
+        userInfo.style.display = 'flex';
+        userName.textContent = user.name;
+      } else {
+        // Utente NON loggato ❌
+        console.log('Utente non loggato');
+        linkLogin.style.display = 'block';
+        userInfo.style.display = 'none';
+      }
+    }
+    
+    // Chiamo subito la funzione
+    controllaUtente();
+    
+    
+    // ========================================
+    // 2. LOGOUT
+    // ========================================
+    
+    document.getElementById('btnLogout').addEventListener('click', function() {
+      console.log('Logout...');
+      
+      // Cancello tutto dal localStorage
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      
+      // Ricarico la pagina
+      window.location.reload();
+    });
+    
+    
+    // ========================================
+    // 3. BOTTONE PUBBLICA
+    // ========================================
+    
+    document.getElementById('btnPubblica').addEventListener('click', function() {
+      console.log('Bottone Pubblica cliccato');
+      
+      const token = localStorage.getItem('token');
+      
+      if (token) {
+        // Utente loggato → vado alla pagina per aggiungere gatto
+        console.log('Utente loggato, vado ad add-cat.html');
+        window.location.href = 'add-cat.html';
+      } else {
+        // Utente NON loggato → vado al login
+        console.log('Utente non loggato, vado al login');
+        alert('Devi fare il login per pubblicare un gatto!');
+        window.location.href = 'login.html';
+      }
+    });
+    
+    
+    // ========================================
+    // 4. INIZIALIZZA LA MAPPA
+    // ========================================
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      try {
+        // Creo la mappa centrata su Napoli
+        map = L.map('map', { scrollWheelZoom: true })
+          .setView([40.8518, 14.2681], 12);
+        
+        // Aggiungo il layer delle tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        console.log('Mappa inizializzata');
+        
+        // Carico i gatti
+        caricaGatti();
+        
+      } catch(e) {
+        console.error('Errore caricamento mappa:', e);
+        document.getElementById('map').innerHTML =
+          '<p style="padding:12px;color:#b00020;">Impossibile caricare la mappa.</p>';
+      }
+    });
+    
+    
+    // ========================================
+    // 5. CARICA I GATTI DAL SERVER
+    // ========================================
+    
+    async function caricaGatti() {
+      console.log('Caricamento gatti...');
+      
+      try {
+        const risposta = await fetch('http://localhost:3005/cats');
+        
+        if (!risposta.ok) {
+          console.log('Errore nel caricamento gatti');
+          return;
+        }
+        
+        const gatti = await risposta.json();
+        console.log('Gatti caricati:', gatti.length);
+        
+        // Per ogni gatto, aggiungo un marker
+        gatti.forEach(function(gatto) {
+          const marker = L.marker([gatto.location.lat, gatto.location.lng]).addTo(map);
+          
+          // Popup con info
+          marker.bindPopup(`
+            <div style="text-align:center; padding:8px;">
+              <strong style="font-size:1.1em;">${gatto.name}</strong><br>
+              <small style="color:#6b7280;">${gatto.description.substring(0, 50)}...</small><br>
+              <a href="cat-detail.html?id=${gatto._id}" style="color:#3b82f6; text-decoration:none; font-weight:500; display:inline-block; margin-top:6px;">
+                👁️ Vedi dettagli →
+              </a>
+            </div>
+          `);
+        });
+        
+      } catch (errore) {
+        console.error('Errore:', errore);
+      }
+    }
+  </script>
+
+</body>
+</html>

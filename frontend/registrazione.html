@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrazione - StreetCats</title>
+
+  <style>
+    :root{
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --surface:#f8fafc;
+      --line:#e5e7eb;
+      --accent:#3b82f6;
+    }
+    * { box-sizing:border-box; }
+    body{ 
+      color:var(--ink); 
+      font-family:system-ui, Arial, sans-serif;
+      margin: 20px;
+      background: #f9fafb;
+    }
+
+    .topbar{
+      display:flex; align-items:center; justify-content:center;
+      background:var(--surface);
+      border:1px solid var(--line); border-radius:10px;
+      padding:14px 16px; position:relative; margin-bottom:14px;
+    }
+    .topbar h1{ margin:0; font-weight:700; letter-spacing:.5px; }
+    .topbar .home{
+      position:absolute; right:12px; top:50%; transform:translateY(-50%);
+      padding:8px 14px; border:1px solid var(--line); border-radius:8px;
+      background:#fff; color:var(--ink); text-decoration:none;
+    }
+    .topbar .home:hover{ border-color:var(--accent); color:var(--accent); }
+
+    .auth{
+      max-width:420px; margin:0 auto; background:#fff;
+      border:1px solid var(--line); border-radius:12px; padding:18px;
+    }
+    .fields{
+      border:1px solid var(--line); border-radius:10px; padding:16px; margin-top:8px;
+      background:#fff;
+    }
+    label{ display:block; margin:10px 0 6px; color:var(--muted); }
+    input[type="text"], input[type="email"], input[type="password"]{
+      width:100%; padding:10px 12px; border:1px solid var(--line);
+      border-radius:8px; background:#fff; color:var(--ink);
+    }
+
+    .btn{
+      display:block; width:100%; margin:16px 0 6px;
+      background:var(--accent); color:#fff; border:none;
+      padding:10px 22px; border-radius:10px; cursor:pointer;
+      box-shadow:0 1px 0 rgba(0,0,0,.08);
+    }
+    .btn:hover{ filter:brightness(1.05); }
+    .btn:disabled{ opacity:0.6; cursor:not-allowed; }
+
+    .link{
+      background:none; border:none; padding:0; color:var(--accent);
+      text-decoration:underline; cursor:pointer; font:inherit;
+    }
+    .link:hover{ color:#2563eb; }
+    
+    .hint{ text-align:center; margin-top:8px; color:var(--muted); }
+
+    .message{ display:none; margin-top:10px; padding:10px; border-radius:8px; }
+    .message-success{ background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; }
+    .message-error{ background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <h1>Registrazione</h1>
+    <a class="home" href="index.html">Home</a>
+  </header>
+
+  <section class="auth">
+    <!-- Messaggio -->
+    <div id="message" class="message"></div>
+
+    <!-- FORM REGISTRAZIONE -->
+    <div id="registerForm">
+      <div class="fields">
+        <form id="formRegister" novalidate>
+          <label for="registerName">Nome</label>
+          <input 
+            id="registerName" 
+            type="text" 
+            autocomplete="name" 
+            placeholder="Il tuo nome"
+            required 
+          />
+
+          <label for="registerEmail" style="margin-top:12px;">Email</label>
+          <input 
+            id="registerEmail" 
+            type="email" 
+            autocomplete="email"
+            placeholder="tua@email.com" 
+            required 
+          />
+
+          <label for="registerPassword" style="margin-top:12px;">Password</label>
+          <input 
+            id="registerPassword" 
+            type="password" 
+            autocomplete="new-password"
+            placeholder="Almeno 6 caratteri" 
+            required 
+          />
+
+          <button id="btnRegister" class="btn" type="submit">
+            Registrazione
+          </button>
+        </form>
+      </div>
+
+      <p class="hint">
+        Hai già un account?
+        <a class="link" href="login.html">Login</a>
+      </p>
+    </div>
+  </section>
+
+  <script>
+    // ========================================
+    // SCRIPT INLINE PER REGISTRAZIONE.HTML
+    // ========================================
+    
+    console.log('Pagina registrazione caricata!');
+    
+    // Prendo gli elementi
+    const formRegistrazione = document.getElementById('formRegister');
+    const inputNome = document.getElementById('registerName');
+    const inputEmail = document.getElementById('registerEmail');
+    const inputPassword = document.getElementById('registerPassword');
+    const bottoneRegistrati = document.getElementById('btnRegister');
+    const elementoMessaggio = document.getElementById('message');
+    
+    
+    // ========================================
+    // 1. MOSTRA MESSAGGI
+    // ========================================
+    
+    function mostraMessaggio(testo, tipo) {
+      console.log('Messaggio:', testo);
+      elementoMessaggio.style.display = 'block';
+      elementoMessaggio.textContent = testo;
+      elementoMessaggio.classList.remove('message-success', 'message-error');
+      
+      if (tipo === 'success') {
+        elementoMessaggio.classList.add('message-success');
+      } else {
+        elementoMessaggio.classList.add('message-error');
+      }
+    }
+    
+    
+    // ========================================
+    // 2. VALIDAZIONE
+    // ========================================
+    
+    function validaCampi(nome, email, password) {
+      console.log('Valido i campi...');
+      
+      if (!nome || nome.trim().length === 0) {
+        mostraMessaggio('Il nome è obbligatorio!', 'error');
+        return false;
+      }
+      
+      if (nome.trim().length < 2) {
+        mostraMessaggio('Il nome deve avere almeno 2 caratteri!', 'error');
+        return false;
+      }
+      
+      if (!email || email.trim().length === 0) {
+        mostraMessaggio('L\'email è obbligatoria!', 'error');
+        return false;
+      }
+      
+      const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!regexEmail.test(email)) {
+        mostraMessaggio('L\'email non è valida!', 'error');
+        return false;
+      }
+      
+      if (!password || password.length === 0) {
+        mostraMessaggio('La password è obbligatoria!', 'error');
+        return false;
+      }
+      
+      if (password.length < 6) {
+        mostraMessaggio('La password deve avere almeno 6 caratteri!', 'error');
+        return false;
+      }
+      
+      console.log('Campi validi!');
+      return true;
+    }
+    
+    
+    // ========================================
+    // 3. FUNZIONE REGISTRAZIONE
+    // ========================================
+    
+    async function registraUtente(nome, email, password) {
+      console.log('Registro utente:', nome, email);
+      
+      try {
+        const risposta = await fetch('http://localhost:3005/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: nome,
+            email: email,
+            password: password
+          })
+        });
+        
+        console.log('Risposta ricevuta, status:', risposta.status);
+        
+        const dati = await risposta.json();
+        console.log('Dati:', dati);
+        
+        if (risposta.ok) {
+          // Successo ✅
+          console.log('Registrazione completata!');
+          mostraMessaggio('Registrazione completata! Ora puoi fare il login.', 'success');
+          
+          // Vado al login dopo 2 secondi
+          setTimeout(function() {
+            window.location.href = 'login.html';
+          }, 2000);
+          
+        } else {
+          // Errore ❌
+          console.log('Errore:', dati.error);
+          mostraMessaggio(dati.error || 'Errore durante la registrazione', 'error');
+        }
+        
+      } catch (errore) {
+        console.error('Errore:', errore);
+        mostraMessaggio('Errore di connessione al server. Riprova!', 'error');
+      }
+    }
+    
+    
+    // ========================================
+    // 4. GESTISCO IL FORM
+    // ========================================
+    
+    formRegistrazione.addEventListener('submit', function(evento) {
+      evento.preventDefault();
+      
+      console.log('Form inviato!');
+      
+      const nome = inputNome.value.trim();
+      const email = inputEmail.value.trim();
+      const password = inputPassword.value;
+      
+      console.log('Nome:', nome, '- Email:', email);
+      
+      // Valido
+      const valido = validaCampi(nome, email, password);
+      
+      if (!valido) {
+        return;
+      }
+      
+      // Disabilito bottone
+      bottoneRegistrati.disabled = true;
+      bottoneRegistrati.textContent = 'Registrazione in corso...';
+      
+      // Chiamo la funzione
+      registraUtente(nome, email, password)
+        .finally(function() {
+          bottoneRegistrati.disabled = false;
+          bottoneRegistrati.textContent = 'Registrazione';
+        });
+    });
+    
+    
+    // ========================================
+    // 5. CONTROLLO SE GIÀ LOGGATO
+    // ========================================
+    
+    const token = localStorage.getItem('token');
+    if (token) {
+      console.log('Già loggato, vado alla home');
+      window.location.href = 'index.html';
+    }
+  </script>
+
+</body>
+</html>
