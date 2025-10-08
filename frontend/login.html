@@ -1,0 +1,116 @@
+<!-- CONTENUTO DELLA PAGINA LOGIN (solo quello dentro il riquadro) -->
+
+<style>
+  :root{
+    --ink:#1f2937;        /* testo principale */
+    --muted:#6b7280;      /* testo secondario */
+    --surface:#f8fafc;    /* sfondo blocchi */
+    --line:#e5e7eb;       /* bordi leggeri */
+    --accent:#3b82f6;     /* blu semplice */
+  }
+  *{ box-sizing:border-box; }
+  body{ color:var(--ink); font-family:system-ui, Arial, sans-serif; }
+
+  /* Barra superiore */
+  .topbar{
+    display:flex; align-items:center; justify-content:center;
+    background:var(--surface);
+    border:1px solid var(--line); border-radius:10px;
+    padding:14px 16px; position:relative; margin-bottom:14px;
+  }
+  .topbar h1{ margin:0; font-weight:700; letter-spacing:.5px; }
+  .topbar .home{
+    position:absolute; right:12px; top:50%; transform:translateY(-50%);
+    padding:8px 14px; border:1px solid var(--line); border-radius:8px;
+    background:#fff; color:var(--ink); text-decoration:none;
+  }
+  .topbar .home:hover{ border-color:var(--accent); color:var(--accent); }
+
+  /* Card centrale */
+  .auth{
+    max-width:420px; margin:0 auto; background:#fff;
+    border:1px solid var(--line); border-radius:12px; padding:18px;
+  }
+  .fields{
+    border:1px solid var(--line); border-radius:10px; padding:16px; margin-top:8px;
+    background:#fff;
+  }
+  label{ display:block; margin:10px 0 6px; color:var(--muted); }
+  input[type="email"], input[type="password"], input[type="text"]{
+    width:100%; padding:10px 12px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink);
+  }
+
+  .btn{
+    display:block; width:100%; margin:16px 0 6px;
+    background:var(--accent); color:#fff; border:none;
+    padding:10px 22px; border-radius:10px; cursor:pointer;
+    box-shadow:0 1px 0 rgba(0,0,0,.08);
+  }
+  .btn:hover{ filter:brightness(1.05); }
+  .link{
+    background:none; border:none; padding:0; color:var(--accent);
+    text-decoration:underline; cursor:pointer; font:inherit;
+  }
+
+  .hint{ text-align:center; margin-top:8px; color:var(--muted); }
+  .message{ display:none; margin-top:10px; padding:10px; border-radius:8px; }
+  .message-success{ background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; }
+  .message-error{ background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+</style>
+
+<!-- Header -->
+<header class="topbar">
+  <h1>Login</h1>
+  <a class="home" href="index.html">Home</a>
+</header>
+
+<!-- Card Auth -->
+<section class="auth">
+  <div id="message" class="message"></div>
+
+  <!-- LOGIN -->
+  <div id="loginForm">
+    <div class="fields">
+      <form id="formLogin" novalidate>
+        <label for="loginEmail">Email:</label>
+        <input id="loginEmail" type="email" autocomplete="email" required />
+
+        <label for="loginPassword" style="margin-top:12px;">Password:</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" required />
+
+        <button id="btnLogin" class="btn" type="submit">Accedi</button>
+      </form>
+    </div>
+
+    <p class="hint">
+      Niente email? <button id="btnShowRegister" class="link" type="button">Registrati</button>
+    </p>
+  </div>
+
+  <!-- REGISTRAZIONE (nascosta, gestita da login.js) -->
+  <div id="registerForm" style="display:none;">
+    <div class="fields">
+      <form id="formRegister" novalidate>
+        <label for="registerName">Nome:</label>
+        <input id="registerName" type="text" autocomplete="name" />
+
+        <label for="registerEmail" style="margin-top:12px;">Email:</label>
+        <input id="registerEmail" type="email" autocomplete="email" />
+
+        <label for="registerPassword" style="margin-top:12px;">Password:</label>
+        <input id="registerPassword" type="password" autocomplete="new-password" />
+
+        <button id="btnRegister" class="btn" type="submit">Crea account</button>
+      </form>
+    </div>
+
+    <p class="hint">
+      Hai già un account?
+      <button id="btnShowLogin" class="link" type="button">Accedi</button>
+    </p>
+  </div>
+</section>
+
+<!-- Qui puoi includere il tuo js/login.js per la logica -->
+<!-- <script src="js/login.js"></script> -->
