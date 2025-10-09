@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stret Casts</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <style>
+    :root{ --ink:#1f2937; --muted:#6b7280; --surface:#f8fafc; --line:#e5e7eb; --accent:#3b82f6; }
+    *{ box-sizing:border-box; } body{ color:var(--ink); font-family:system-ui, Arial, sans-serif; margin:20px; background:#f9fafb; }
+    .topbar{ display:flex; align-items:center; justify-content:center; background:var(--surface);
+      border:1px solid var(--line); border-radius:10px; padding:14px 16px; position:relative; }
+    .topbar h1{ margin:0; font-weight:700; letter-spacing:.5px; color:var(--ink); }
+    .topbar .login{ position:absolute; right:12px; top:50%; transform:translateY(-50%);
+      padding:8px 14px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); text-decoration:none; }
+    .topbar .login:hover{ border-color:var(--accent); color:var(--accent); }
+    .map-box{ margin-top:14px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:10px; }
+    #map{ height:420px; border-radius:10px; border:1px solid var(--line); }
+    .actions{ display:flex; justify-content:center; margin:22px 0 8px; }
+    .btn{ background:var(--accent); color:#fff; border:none; padding:10px 22px; border-radius:10px; cursor:pointer; box-shadow:0 1px 0 rgba(0,0,0,.08); }
+    .btn:hover{ filter:brightness(1.05); } .btn:active{ transform:translateY(1px); }
+    .message{ display:none; margin-top:12px; padding:10px; border-radius:8px; border:1px solid var(--line); }
+    .message-info{ background:#eef2ff; color:#1e3a8a; }
+    .message-error{ background:#fef2f2; color:#991b1b; border-color:#fecaca; }
+  </style>
+
+  <!-- Config opzionale -->
+  <script>
+    window.CONFIG = window.CONFIG || { API_URL: 'http://localhost:3005' };
+  </script>
+
+  <!-- La logica sta qui -->
+  <script src="js/index.js" defer></script>
+</head>
+<body>
+
+  <header class="topbar">
+    <h1>Stret Casts</h1>
+    <nav id="nav"><a class="login" href="login.html">Login</a></nav>
+  </header>
+
+  <section class="map-box" aria-label="Mappa">
+    <div id="map" role="region" aria-label="Mappa centrata su Napoli"></div>
+  </section>
+
+  <div class="actions">
+    <button id="btnPublish" class="btn">Pubblica</button>
+  </div>
+
+  <div id="message" class="message"></div>
+  <div id="loading" class="message message-info" style="display:none;">Caricamento…</div>
+
+</body>
+</html>
