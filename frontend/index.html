@@ -1,0 +1,101 @@
+// VERSIONE MINIMA - index.js
+var map;
+
+// INIZIALIZZAZIONE
+window.addEventListener('DOMContentLoaded', function() {
+  console.log('START');
+  setupNavbar();
+  setupMap();
+  setupButton();
+  loadCats();
+});
+
+// NAVBAR
+function setupNavbar() {
+  var nav = document.getElementById('nav');
+  var token = localStorage.getItem('token');
+  
+  if (token) {
+    var user = JSON.parse(localStorage.getItem('user') || '{}');
+    nav.innerHTML = '<span style="position:absolute;right:120px;top:50%;transform:translateY(-50%);color:#666;">Ciao, ' + (user.name || 'Utente') + '</span><a class="login" href="#" onclick="logout(); return false;">Logout</a>';
+  } else {
+    nav.innerHTML = '<a class="login" href="login.html">Login</a>';
+  }
+}
+
+function logout() {
+  localStorage.clear();
+  location.reload();
+}
+
+// MAPPA
+function setupMap() {
+  console.log('Mappa...');
+  map = L.map('map').setView([40.8518, 14.2681], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+  console.log('OK');
+}
+
+// PULSANTE
+function setupButton() {
+  document.getElementById('btnPublish').onclick = function() {
+    if (localStorage.getItem('token')) {
+      location.href = 'add-cat.html';
+    } else {
+      alert('Fai il login!');
+      location.href = 'login.html';
+    }
+  };
+}
+
+// CARICA GATTI
+function loadCats() {
+  console.log('Carico gatti...');
+  
+  var url = 'http://localhost:3005/cats';
+  
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(cats) {
+      console.log('Ricevuti:', cats.length);
+      showCats(cats);
+    })
+    .catch(function(e) {
+      console.error('Errore:', e);
+      alert('Errore connessione al server!');
+    });
+}
+
+// MOSTRA GATTI
+function showCats(cats) {
+  if (!cats || cats.length === 0) {
+    console.log('Nessun gatto');
+    return;
+  }
+  
+  console.log('Mostro', cats.length, 'gatti');
+  
+  for (var i = 0; i < cats.length; i++) {
+    var cat = cats[i];
+    var lat = cat.location.lat;
+    var lng = cat.location.lng;
+    var id = cat._id;
+    var name = cat.name;
+    
+    console.log(i, name, id);
+    
+    var marker = L.marker([lat, lng]).addTo(map);
+    
+    var popup = '<div style="text-align:center;padding:10px;">' +
+                '<b style="font-size:16px;">' + name + '</b><br><br>' +
+                '<a href="cat-detail.html?id=' + id + '" style="background:#3b82f6;color:white;padding:8px 16px;border-radius:6px;text-decoration:none;">Vedi dettagli</a>' +
+                '</div>';
+    
+    marker.bindPopup(popup);
+  }
+  
+  console.log('FATTO');
+}
