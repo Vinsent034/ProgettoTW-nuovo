@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StreetCats - Mappa dei Gatti</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+        crossorigin="" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    /* Header */
+    .header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .header h1 {
+      font-size: 24px;
+      color: #333;
+    }
+
+    .header h1 span {
+      color: #3b82f6;
+    }
+
+    #nav {
+      position: relative;
+    }
+
+    .login {
+      padding: 8px 20px;
+      background: #3b82f6;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .login:hover {
+      background: #2563eb;
+    }
+
+    /* Contenitore principale */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Pulsante pubblica */
+    .publish-section {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    #btnPublish {
+      padding: 14px 32px;
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+      transition: all 0.2s;
+    }
+
+    #btnPublish:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Card mappa */
+    .map-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .map-card h2 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    /* Mappa */
+    #map {
+      width: 100%;
+      height: 600px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    /* Loading */
+    #loading {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Messaggi */
+    #message {
+      display: none;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .message-info {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+
+    .message-error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .message-info a,
+    .message-error a {
+      color: inherit;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 20px;
+      }
+
+      #map {
+        height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <h1>🐱 <span>StreetCats</span></h1>
+    <nav id="nav">
+      <a class="login" href="login.html">Login</a>
+    </nav>
+  </header>
+
+  <!-- Contenuto principale -->
+  <div class="container">
+    
+    <!-- Pulsante Pubblica -->
+    <div class="publish-section">
+      <button id="btnPublish">
+        ➕ Pubblica Gatto
+      </button>
+    </div>
+
+    <!-- Messaggi -->
+    <div id="message"></div>
+
+    <!-- Loading -->
+    <div id="loading">
+      <div class="spinner"></div>
+      <p>Caricamento gatti...</p>
+    </div>
+
+    <!-- Mappa -->
+    <div class="map-card">
+      <h2>🗺️ Mappa dei Gatti Avvistati</h2>
+      <div id="map"></div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>StreetCats - Progetto Tecnologie Web 2024/2025</p>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+          crossorigin=""></script>
+
+  <!-- Config API -->
+  <script>
+    window.CONFIG = { API_URL: 'http://localhost:3005' };
+  </script>
+
+  <!-- Script principale -->
+  <script src="js/index.js"></script>
+
+</body>
+</html>
