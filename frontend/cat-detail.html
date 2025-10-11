@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dettaglio Gatto - StreetCats</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <style>
+    body { font-family: Arial, sans-serif; background:#f2f2f2; margin:0; padding:16px; color:#222; }
+    .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .header h1 { font-size:20px; margin:0; }
+    .back-link { color:#1a73e8; text-decoration:none; }
+    .back-link:hover { text-decoration:underline; }
+
+    .container { max-width:900px; margin:0 auto; background:#fff; border:1px solid #ccc; padding:12px; }
+    .cat-image { width:100%; height:350px; object-fit:cover; border:1px solid #bbb; margin-bottom:10px; }
+
+    h3 { margin:10px 0; }
+    .info { margin-bottom:10px; }
+    .info span { display:block; font-size:14px; margin-top:4px; }
+
+    #map { width:100%; height:300px; border:1px solid #bbb; background:#f9f9f9; margin-top:10px; }
+
+    .description { padding:8px 0; border-top:1px solid #ccc; margin-top:10px; font-size:14px; line-height:1.5; }
+
+    .owner-section { background:#fff3cd; border:1px solid #ffeeba; padding:10px; margin-top:10px; }
+    .owner-section button { background:#dc3545; color:#fff; border:none; padding:6px 10px; cursor:pointer; }
+
+    .comments { margin-top:15px; }
+    .comment { background:#f8f9fa; border:1px solid #ddd; padding:8px; margin-bottom:8px; }
+    .comment strong { display:block; }
+    .comment small { color:#666; }
+
+    textarea { width:100%; padding:8px; border:1px solid #bbb; min-height:60px; resize:vertical; }
+    .comment-form button { margin-top:6px; background:#1a73e8; color:#fff; border:none; padding:6px 10px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Dettaglio Gatto</h1>
+    <a href="index.html" class="back-link">← Torna alla mappa</a>
+  </div>
+
+  <div class="container">
+    <img id="catImage" class="cat-image" alt="Foto del gatto">
+
+    <div class="info">
+      <h3>Informazioni</h3>
+      <span><strong>Nome:</strong> <span id="catName">-</span></span>
+      <span><strong>Data:</strong> <span id="catDate">-</span></span>
+      <span><strong>Autore:</strong> <span id="catAuthor">-</span></span>
+    </div>
+
+    <div id="ownerSection" class="owner-section" style="display:none;">
+      <p>Sei il proprietario di questo post.</p>
+      <button onclick="deletePost()">Elimina Pubblicazione</button>
+    </div>
+
+    <div class="description">
+      <h3>Descrizione</h3>
+      <div id="catDescription">-</div>
+    </div>
+
+    <div>
+      <h3>Posizione</h3>
+      <div id="map"></div>
+    </div>
+
+    <div class="comments">
+      <h3>Commenti (<span id="commentCount">0</span>)</h3>
+      <div id="commentsList"></div>
+
+      <div id="commentFormSection" class="comment-form" style="display:none;">
+        <textarea id="commentText" placeholder="Scrivi un commento..."></textarea>
+        <button id="btnAddComment" onclick="addComment()">Aggiungi Commento</button>
+      </div>
+
+      <div id="loginPrompt" style="display:none; text-align:center; color:#666;">
+        <a href="login.html" style="color:#1a73e8;">Effettua il login</a> per commentare
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script>
+    window.CONFIG = { API_URL: 'http://localhost:3005' };
+    let map, catData, catId, currentUser = null;
+
+    function show(el){ if(el) el.style.display=''; }
+    function hide(el){ if(el) el.style.display='none'; }
+
+    function getCatIdFromUrl(){ const p=new URLSearchParams(window.location.search); return p.get('id'); }
+    function formatDate(d){ const date=new Date(d); return date.toLocaleString('it-IT'); }
+
+    async function loadCatDetails(){
+      try {
+        const url=`${window.CONFIG.API_URL}/cats/${catId}`;
+        const res=await fetch(url);
+        if(!res.ok) throw new Error('Gatto non trovato');
+        catData=await res.json();
+        document.getElementById('catImage').src=`${window.CONFIG.API_URL}/uploads/${catData.image}`;
+        document.getElementById('catName').textContent=catData.name;
+        document.getElementById('catDate').textContent=formatDate(catData.date);
+        document.getElementById('catAuthor').textContent=catData.author?.name||'Utente';
+        document.getElementById('catDescription').textContent=catData.description;
+        initMap();
+        loadComments();
+        checkOwnership();
+      } catch(err){ alert(err.message); }
+    }
+
+    function initMap(){
+      const lat=catData.location.lat, lng=catData.location.lng;
+      map=L.map('map').setView([lat,lng],15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+      L.marker([lat,lng]).addTo(map).bindPopup(catData.name).openPopup();
+    }
+
+    function checkOwnership(){
+      const u=localStorage.getItem('user');
+      if(!u) return;
+      currentUser=JSON.parse(u);
+      const authorId=catData.author?._id||catData.author;
+      if(currentUser.id&&authorId&&currentUser.id.toString()===authorId.toString()) show(document.getElementById('ownerSection'));
+    }
+
+    async function deletePost(){
+      if(!confirm('Eliminare questo gatto?')) return;
+      const token=localStorage.getItem('token');
+      if(!token){ alert('Login richiesto'); window.location.href='login.html'; return; }
+      const url=`${window.CONFIG.API_URL}/cats/${catId}`;
+      const res=await fetch(url,{method:'DELETE',headers:{'Authorization':`Bearer ${token}`}});
+      if(res.ok){ alert('Gatto eliminato'); window.location.href='index.html'; } else alert('Errore eliminazione');
+    }
+
+    async function loadComments(){
+      try{
+        const url=`${window.CONFIG.API_URL}/comments/${catId}`;
+        const res=await fetch(url);
+        const comments=await res.json();
+        document.getElementById('commentCount').textContent=comments.length;
+        const c=document.getElementById('commentsList');
+        if(comments.length===0){ c.innerHTML='<p>Nessun commento</p>'; return; }
+        c.innerHTML=comments.map(cm=>`<div class='comment'><strong>${cm.author?.name||'Utente'}</strong><small>${formatDate(cm.date)}</small><p>${cm.text}</p></div>`).join('');
+        if(localStorage.getItem('token')) show(document.getElementById('commentFormSection')); else show(document.getElementById('loginPrompt'));
+      }catch(e){ console.error(e); }
+    }
+
+    async function addComment(){
+      const t=document.getElementById('commentText');
+      const txt=t.value.trim();
+      if(!txt){ alert('Scrivi un commento'); return; }
+      const token=localStorage.getItem('token');
+      if(!token){ alert('Login richiesto'); window.location.href='login.html'; return; }
+      const url=`${window.CONFIG.API_URL}/comments/${catId}`;
+      const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify({text:txt})});
+      if(res.ok){ t.value=''; loadComments(); } else alert('Errore commento');
+    }
+
+    window.addEventListener('DOMContentLoaded',()=>{ catId=getCatIdFromUrl(); if(!catId){ alert('ID mancante'); return; } loadCatDetails(); });
+  </script>
+</body>
+</html>
