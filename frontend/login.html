@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - StreetCats</title>
+
+  <style>
+    /* Stile semplice ma più curato */
+    :root{
+      --bg:#f3f4f6; --ink:#111827; --muted:#6b7280; --line:#d1d5db; --accent:#2563eb;
+      --card:#ffffff; --ok:#065f46; --okbg:#d1fae5; --bad:#991b1b; --badbg:#fee2e2;
+    }
+    *, *::before, *::after{ box-sizing:border-box; }
+    html, body{ height:100%; }
+    body{ margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:var(--bg); color:var(--ink); }
+
+    /* Topbar molto semplice */
+    .topbar{ display:flex; align-items:center; justify-content:center; gap:8px;
+      background:#e5e7eb; padding:10px; border-bottom:1px solid var(--line); }
+    .topbar h1{ margin:0; font-size:18px; }
+    .topbar a{ margin-left:auto; margin-right:8px; text-decoration:none; color:var(--ink);
+      border:1px solid var(--ink); padding:6px 10px; font-size:14px; background:#fff; }
+    .topbar a:hover{ background:#f9fafb; }
+
+    /* Card auth */
+    .wrap{ display:flex; align-items:flex-start; justify-content:center; padding:16px; }
+    .auth{ width:100%; max-width:380px; background:var(--card); border:1px solid var(--line);
+      border-radius:8px; padding:16px; box-shadow:0 1px 0 rgba(0,0,0,.04); }
+
+    label{ display:block; margin:10px 0 6px; color:var(--muted); font-size:14px; }
+    input{ width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:6px; font-size:14px; }
+    input:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+
+    button{ appearance:none; border:none; background:var(--accent); color:#fff; padding:10px 14px;
+      border-radius:6px; cursor:pointer; font-size:14px; }
+    button:disabled{ opacity:.6; cursor:not-allowed; }
+
+    /* Layout dei blocchi */
+    .block{ margin-top:8px; border:1px solid var(--line); border-radius:8px; padding:12px; background:#fff; }
+    .actions{ margin-top:12px; display:flex; gap:8px; }
+    .btn-full{ width:100%; }
+
+    .hint{ text-align:center; margin-top:12px; font-size:14px; color:var(--muted); }
+    .link{ background:none; color:var(--accent); text-decoration:underline; padding:0; }
+
+    /* Messaggi */
+    #message{ display:none; margin-bottom:10px; padding:10px; border-radius:6px; font-size:14px; }
+    .message-success{ display:block; background:var(--okbg); color:var(--ok); border:1px solid #a7f3d0; }
+    .message-error{ display:block; background:var(--badbg); color:var(--bad); border:1px solid #fecaca; }
+
+    /* Piccola responsività */
+    @media (max-width: 420px){
+      .topbar a{ font-size:13px; padding:5px 8px; }
+      .auth{ padding:12px; }
+    }
+  </style>
+
+  <script>
+    window.CONFIG = { API_URL: 'http://localhost:3005' };
+  </script>
+  <script src="js/login.js" defer></script>
+</head>
+<body>
+
+  <header class="topbar">
+    <h1>Login</h1>
+    <a href="index.html">Home</a>
+  </header>
+
+  <main class="wrap">
+    <section class="auth">
+      <!-- Messaggi (gestiti da JS) -->
+      <div id="message"></div>
+
+      <!-- LOGIN -->
+      <div id="loginForm">
+        <div class="block">
+          <form id="formLogin" novalidate>
+            <label for="loginEmail">Email</label>
+            <input id="loginEmail" type="email" autocomplete="email" placeholder="tua@email.com" required />
+
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" autocomplete="current-password" placeholder="La tua password" required />
+
+            <div class="actions">
+              <button id="btnLogin" type="submit" class="btn-full">Accedi</button>
+            </div>
+          </form>
+        </div>
+        <p class="hint">
+          Non hai un account?
+          <button id="btnShowRegister" class="link" type="button">Registrati</button>
+        </p>
+      </div>
+
+      <!-- REGISTRAZIONE (nascosta, togglata via JS) -->
+      <div id="registerForm" style="display:none;">
+        <div class="block">
+          <form id="formRegister" novalidate>
+            <label for="registerName">Nome</label>
+            <input id="registerName" type="text" autocomplete="name" placeholder="Il tuo nome" />
+
+            <label for="registerEmail">Email</label>
+            <input id="registerEmail" type="email" autocomplete="email" placeholder="tua@email.com" />
+
+            <label for="registerPassword">Password</label>
+            <input id="registerPassword" type="password" autocomplete="new-password" placeholder="Almeno 6 caratteri" />
+
+            <div class="actions">
+              <button id="btnRegister" type="submit" class="btn-full">Crea account</button>
+            </div>
+          </form>
+        </div>
+        <p class="hint">
+          Hai già un account?
+          <button id="btnShowLogin" class="link" type="button">Accedi</button>
+        </p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
