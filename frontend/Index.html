@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang = "it">  
+
+<head>  
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Con quessto posso posso esportare la mappa che poosso usare per l'index-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- coneto il link col css-->
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+
+
+
+<body>
+
+
+<header class="header">    
+    <h1> StreetCats </h1>
+    <div id = "navbar">   
+        <button class="nav-btn" onclick="goToLogin()">Login</button>
+    </div>
+
+</header>
+
+
+<div class = "container">
+
+<div class = "publish-section"> 
+    <button class = "btn-publish" id="btnPublish" onclick="TastoPublicaGatto()">
+        Publica un gatto
+    </button>
+</div>
+
+
+<div id = "message" class = "message"> </div>
+
+
+<div id = "loading">   
+    Carico i gatti
+</div>
+
+
+<div id = "map">  </div>
+
+
+
+
+</div>
+
+
+<script src="js/index.js"></script>
+
+</body>
+
+</html>
