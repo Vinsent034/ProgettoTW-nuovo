@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - StreetCats</title>
+  
+  <!-- CSS generali (header, bottoni comuni) -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- CSS specifici per login -->
+  <link rel="stylesheet" href="css/login.css">
+</head>
+
+
+
+
+
+<body>
+
+  <!-- Contenitore principale -->
+  <div class="login-container">
+    
+    <!-- Link per tornare alla home -->
+    <div class="back-link">
+      <a href="index.html">← Torna alla Home</a>
+    </div>
+    
+    <!-- Messaggio di errore/successo (nascosto di default) -->
+    <div id="alert-message" class="alert hidden"></div>
+    
+    
+    <!-- Par del login , qundi nome , emil e login-->
+    <div id="form-login">
+      <h2>Login</h2>
+      
+      <form id="loginForm">
+        
+        <!--  Email -->
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input  type="email"   id="login-email" name="email" placeholder="tua@email.com" required  >
+        </div>
+        
+        <!--  Password -->
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input  type="password"   id="login-password"   name="password"  placeholder="••••••••" required>
+        </div>
+        
+        <!-- Bottone per il Login -->
+        <button type="submit" class="btn-primary">
+          Accedi
+        </button>
+      </form>
+      
+      <!-- Link per passare a registrazione -->
+      <div class="switch-form">
+        Non hai un account? 
+        <a onclick="mostraRegistrazione()">Registrati</a>
+      </div>
+    </div>
+    
+    
+    <!--Perte della registraziione -->
+    <div id="form-registrazione" class="hidden">
+      <h2>Registrazione</h2>
+      
+      <form id="registrazioneForm">
+        
+        <!-- Nome -->
+        <div class="form-group">
+          <label for="reg-nome">Nome</label>
+          <input  type="text"  id="reg-nome" name="nome" placeholder="Il tuo nome"required>
+        </div>
+        
+        <!-- Email -->
+        <div class="form-group">
+          <label for="reg-email">Email</label>
+          <input   type="email"  id="reg-email"   name="email"  placeholder="tua@email.com" required>
+        </div>
+        
+        <!-- Password -->
+        <div class="form-group">
+          <label for="reg-password">Password</label>
+          <input   type="password"   id="reg-password"   name="password"  placeholder="Almeno 6 caratteri"   required>
+        </div>
+        
+        <!-- Bottone per la  Registrazione -->
+        <button type="submit" class="btn-primary">
+          Crea Account
+        </button>
+      </form>
+      
+      <!-- Link per tornare a login -->
+      <div class="switch-form">
+        Hai già un account? 
+        <a onclick="mostraLogin()">Accedi</a>
+      </div>
+    </div>
+    
+  </div>
+
+  <!-- colelgamento per il codice da java -->
+  <script src="js/login.js"></script>
+
+</body>
+</html>
