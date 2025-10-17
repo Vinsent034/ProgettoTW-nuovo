@@ -1,0 +1,145 @@
+/* ===================================
+   LOGIN.CSS - StreetCats
+   CSS semplice per login/registrazione
+   =================================== */
+
+/* ===== CONTENITORE PRINCIPALE ===== */
+.login-container {
+  max-width: 400px;              /* Larghezza massima */
+  margin: 50px auto;             /* Centra orizzontalmente */
+  background-color: white;       /* Sfondo bianco */
+  padding: 30px;                 /* Spazio interno */
+  border-radius: 10px;           /* Angoli arrotondati */
+  border: 1px solid #ddd;        /* Bordo grigio chiaro */
+}
+
+/* ===== TITOLO (h2) ===== */
+.login-container h2 {
+  text-align: center;            /* Centra il testo */
+  margin-bottom: 20px;           /* Spazio sotto */
+  color: #333;                   /* Grigio scuro */
+  font-size: 24px;               /* Dimensione testo */
+}
+
+/* ===== LINK "TORNA ALLA HOME" ===== */
+.back-link {
+  text-align: center;            /* Centra il testo */
+  margin-bottom: 20px;           /* Spazio sotto */
+}
+
+.back-link a {
+  color: #2196F3;                /* Blu */
+  text-decoration: none;         /* Toglie sottolineatura */
+  font-size: 14px;               /* Dimensione piccola */
+}
+
+.back-link a:hover {
+  text-decoration: underline;    /* Sottolinea quando passi sopra */
+}
+
+/* ===== GRUPPO INPUT (label + input insieme) ===== */
+.form-group {
+  margin-bottom: 15px;           /* Spazio sotto ogni gruppo */
+}
+
+/* ===== ETICHETTE (label) ===== */
+.form-group label {
+  display: block;                /* Una per riga */
+  margin-bottom: 5px;            /* Spazio sotto */
+  color: #666;                   /* Grigio medio */
+  font-size: 14px;               /* Piccolo */
+}
+
+/* ===== INPUT (email, password, text) ===== */
+.form-group input {
+  width: 100%;                   /* Largo quanto il contenitore */
+  padding: 10px;                 /* Spazio interno */
+  border: 1px solid #ddd;        /* Bordo grigio chiaro */
+  border-radius: 5px;            /* Angoli leggermente arrotondati */
+  font-size: 14px;               /* Dimensione testo */
+  background-color: #f9f9f9;     /* Grigio chiarissimo */
+}
+
+/* Input quando ci clicchi sopra */
+.form-group input:focus {
+  outline: none;                 /* Toglie bordo blu di default */
+  border-color: #2196F3;         /* Bordo blu */
+  background-color: white;       /* Sfondo bianco */
+}
+
+/* ===== BOTTONE PRINCIPALE ===== */
+.btn-primary {
+  width: 100%;                   /* Largo quanto il contenitore */
+  padding: 12px;                 /* Spazio interno */
+  background-color: #2196F3;     /* Blu */
+  color: white;                  /* Testo bianco */
+  border: none;                  /* Niente bordo */
+  border-radius: 5px;            /* Angoli arrotondati */
+  font-size: 16px;               /* Testo medio */
+  font-weight: bold;             /* Grassetto */
+  cursor: pointer;               /* Manina quando passi sopra */
+  margin-top: 10px;              /* Spazio sopra */
+}
+
+/* Bottone quando passi sopra */
+.btn-primary:hover {
+  background-color: #1976D2;     /* Blu più scuro */
+}
+
+/* ===== TESTO PER CAMBIARE FORM ===== */
+.switch-form {
+  text-align: center;            /* Centra il testo */
+  margin-top: 15px;              /* Spazio sopra */
+  font-size: 14px;               /* Piccolo */
+  color: #666;                   /* Grigio */
+}
+
+.switch-form a {
+  color: #2196F3;                /* Blu */
+  text-decoration: none;         /* Toglie sottolineatura */
+  cursor: pointer;               /* Manina */
+}
+
+.switch-form a:hover {
+  text-decoration: underline;    /* Sottolinea quando passi sopra */
+}
+
+/* ===== MESSAGGI (errore/successo) ===== */
+.alert {
+  padding: 10px;                 /* Spazio interno */
+  margin-bottom: 15px;           /* Spazio sotto */
+  border-radius: 5px;            /* Angoli arrotondati */
+  text-align: center;            /* Centra testo */
+  font-size: 14px;               /* Piccolo */
+}
+
+/* Messaggio di errore (rosso) */
+.alert-error {
+  background-color: #ffebee;     /* Rosa chiaro */
+  color: #c62828;                /* Rosso scuro */
+  border: 1px solid #ef9a9a;     /* Bordo rosso chiaro */
+}
+
+/* Messaggio di successo (verde) */
+.alert-success {
+  background-color: #e8f5e9;     /* Verde chiaro */
+  color: #2e7d32;                /* Verde scuro */
+  border: 1px solid #a5d6a7;     /* Bordo verde chiaro */
+}
+
+/* ===== NASCONDERE ELEMENTI ===== */
+.hidden {
+  display: none;                 /* Invisibile */
+}
+
+/* ===== RESPONSIVE - MOBILE ===== */
+@media (max-width: 600px) {
+  .login-container {
+    margin: 20px;                /* Margini più piccoli su mobile */
+    padding: 20px;               /* Padding più piccolo */
+  }
+  
+  .login-container h2 {
+    font-size: 20px;             /* Titolo più piccolo */
+  }
+}
