@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dettaglio Gatto - StreetCats</title>
+
+
+   
+
+   <!--   <link rel="stylesheet" href="css/style.css">  --> 
+    <link rel="stylesheet" href="css/detail-cat.css">
+
+
+ <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+</head> 
+
+<body>
+
+<header class = "header">   
+    <h1>StreetCats</h1>
+</header>
+
+
+<div class = "container">   
+
+
+<h2 id = "NomeGatto">Caricamento</h2>
+
+
+ <div class = "Menu">
+
+ <div class="FotoGatto">
+    <img id="cat-photo" src="" alt="Foto gatto">
+ </div>
+
+
+
+ <div class="BarraCommenti">
+    <h3>Commenti</h3>
+    <!--Te lo fa aggiungere solo se sei loggato -->
+     <div id="AggiungiCommento" class="hidden">
+        <textarea id="Commento" placeholder="Scrivi un commento"></textarea>
+        <button onclick="AggiungiCommento()">Invia</button>
+      </div>
+
+ <div id="ListaCommenti">Caricamento commenti...</div>
+
+ </div>
+
+
+</div>
+
+
+ <!-- Descrizione sotto a sinistra -->
+ <div class="SezioneDescrizione">
+    <h3>Descrizione</h3>
+    <div id="DescrizioneGatto">Caricamento descrizione...</div>
+ </div>
+
+
+
+
+  <button id="BottoneElimina" class="hidden" onclick="EliminaGatto()">Elimina Gatto</button>
+  <button class="back-home-btn" onclick="window.location.href='index.html'">← Torna alla Home</button>
+
+</div>
+
+<script src="js/detail-cat.js"></script>
+
+
+</body>
+
+
+
+</html>
